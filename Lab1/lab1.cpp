@@ -79,11 +79,17 @@ int main(int argc, char *argv[])
     else
         ::isCout = false;
 
-    cout << "Метод Эйлера \nh=" << h1 << " " << Euler(x_0, y_0, x_n, h1) << "\nh=" << h2 << " " << Euler(x_0, y_0, x_n, h2) << endl;
+    cout << "Метод Эйлера" << endl;
+    cout << "h=" << h1 << " " << Euler(x_0, y_0, x_n, h1) << endl;
+    cout << "h=" << h2 << " " << Euler(x_0, y_0, x_n, h2) << endl;
 
-    cout << "Модифицированный метод Эйлера \nh=" << h1 << " " << modifiedEuler(x_0, y_0, x_n, h1) << "\nh=" << h2 << " " << modifiedEuler(x_0, y_0, x_n, h2) << endl;
+    cout << "Модифицированный метод Эйлера" << endl;
+    cout << "h=" << h1 << " " << modifiedEuler(x_0, y_0, x_n, h1) << endl;
+    cout << "h=" << h2 << " " << modifiedEuler(x_0, y_0, x_n, h2) << endl;
 
-    cout << "Метода Рунге-Кутты четвертого порядка \nh=" << h1 << " " << RK(x_0, y_0, x_n, h1) << "\nh=" << h2 << " " << RK(x_0, y_0, x_n, h2) << endl;
+    cout << "Метода Рунге-Кутты четвертого порядка" << endl;
+    cout << "h=" << h1 << " " << RK(x_0, y_0, x_n, h1) << endl;
+    cout << "h=" << h2 << " " << RK(x_0, y_0, x_n, h2) << endl;
     
     return 0;
 }
