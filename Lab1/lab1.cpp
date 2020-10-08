@@ -2,6 +2,7 @@
 #include <iomanip>      // std::setw
 #include <cmath>        // exp
 #include <string.h>
+#include <fstream>
 
 using namespace std;
 
@@ -12,22 +13,47 @@ float dxdy(float x, float y)
     return (exp(x) - 1);
 }
 
+FILE* openFile(std::string name)
+{
+    FILE* file = fopen(name.c_str(), "w");
+    if (file == NULL)
+    {
+        perror("Error to open file");
+        return NULL;
+    }
+    return file;
+}
+
+void addDataOnFile(FILE *f, float x, float y)
+{
+    fprintf(f,"%f\t%f\n", static_cast<double>(x), static_cast<double>(y));
+}
+
+void closeFile(FILE *f)
+{
+    fclose(f);
+}
+
 float Euler(float x_0, float y_0, float x_n, float h)
 {
+    FILE *file = openFile("Euler.dat");
     float x = x_0, y = y_0;
     float n = (x_n - x_0) / h;
     for (int i = 1; i <= n; i++)
     {
         x = x_0 + i * h;
         y = y + h * dxdy(x, y);
+        addDataOnFile(file, x, y);
         if (::isCout) cout << "step=" << i <<
                 " x=" << x << " y=" << y << endl;
     }
+    closeFile(file);
     return y;
 }
 
 float modifiedEuler(float x_0, float y_0, float x_n, float h)
 {
+    FILE *file = openFile("modifiedEuler.dat");
     float x = x_0, y = y_0, _x = x;
     float n = (x_n - x_0) / h;
     float _y;
@@ -37,14 +63,17 @@ float modifiedEuler(float x_0, float y_0, float x_n, float h)
         x = x_0 + i * h;
         y = y + h / 2 * (dxdy(_x, y) + dxdy(x, _y));
         _x = x;
+        addDataOnFile(file, x, y);
         if (::isCout) cout << "step=" << i <<
                 " x=" << x << " y=" << y << endl;
     }
+    closeFile(file);
     return y;
 }
 
 float RK(float x_0, float y_0, float x_n, float h)
 {
+    FILE *file = openFile("RK.dat");
     float k1 = 0.f, k2 = 0.f, k3 = 0.f, k4 = 0.f;
     float x = x_0, y = y_0;
     float n = (x_n - x_0) / h;
@@ -57,11 +86,14 @@ float RK(float x_0, float y_0, float x_n, float h)
 
         y = y + h / 6 * (k1 + 2 * k2 + 2 * k3 + k4);
         x = x_0 + i * h;
+        addDataOnFile(file, x, y);
         if (::isCout) cout << "step=" << i <<
                 " x=" << x << " y=" << y << endl;
     }
+    closeFile(file);
     return y;
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -79,6 +111,7 @@ int main(int argc, char *argv[])
     else
         ::isCout = false;
 
+
     cout << "Метод Эйлера" << endl;
     cout << "h=" << h1 << " " << Euler(x_0, y_0, x_n, h1) << endl;
     cout << "h=" << h2 << " " << Euler(x_0, y_0, x_n, h2) << endl;
@@ -90,6 +123,6 @@ int main(int argc, char *argv[])
     cout << "Метода Рунге-Кутты четвертого порядка" << endl;
     cout << "h=" << h1 << " " << RK(x_0, y_0, x_n, h1) << endl;
     cout << "h=" << h2 << " " << RK(x_0, y_0, x_n, h2) << endl;
-    
+
     return 0;
 }
