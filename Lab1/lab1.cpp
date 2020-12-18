@@ -38,7 +38,8 @@ void closeFile(FILE *f)
 
 float Euler(float x_0, float y_0, float x_n, float h)
 {
-    FILE *file = openFile("Euler.dat");
+	string str = "Euler" + std::to_string(h) + ".dat";
+    FILE *file = openFile(str);
     float x = x_0, y = y_0;
     float n = (x_n - x_0) / h;
     for (int i = 1; i <= n; i++)
@@ -55,7 +56,8 @@ float Euler(float x_0, float y_0, float x_n, float h)
 
 float modifiedEuler(float x_0, float y_0, float x_n, float h)
 {
-    FILE *file = openFile("modifiedEuler.dat");
+	string str = "modifiedEuler" + std::to_string(h) + ".dat";
+    FILE *file = openFile(str);
     float x = x_0, y = y_0, _x = x;
     float n = (x_n - x_0) / h;
     float _y;
@@ -75,7 +77,8 @@ float modifiedEuler(float x_0, float y_0, float x_n, float h)
 
 float RK(float x_0, float y_0, float x_n, float h)
 {
-    FILE *file = openFile("RK.dat");
+	string str = "RK" + std::to_string(h) + ".dat";
+    FILE *file = openFile(str);
     float k1 = 0.f, k2 = 0.f, k3 = 0.f, k4 = 0.f;
     float x = x_0, y = y_0;
     float n = (x_n - x_0) / h;

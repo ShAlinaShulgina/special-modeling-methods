@@ -7,4 +7,4 @@ lab1.o: lab1.cpp
 	g++ -c lab1.cpp
 
 clean:
-	rm -rf *.o lab1
+	rm -rf *.o main
