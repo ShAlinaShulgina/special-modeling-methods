@@ -1,8 +1,10 @@
 #include <iostream>
 #include <iomanip>      // std::setw
 #include <cmath>        // exp
-#include <string.h>
 #include <fstream>
+
+#include <string.h>
+#include <time.h>
 
 using namespace std;
 
@@ -94,6 +96,18 @@ float RK(float x_0, float y_0, float x_n, float h)
     return y;
 }
 
+void call(float x_0, float y_0, float x_n, float h, string method_name, float(*foo) (float, float, float, float))
+{
+	clock_t currentTime;	
+    cout << method_name << endl;
+	//Берем текущее системное время
+	currentTime = clock();
+    cout << "h=" << h << " " << foo(x_0, y_0, x_n, h) << endl;
+    //Берем разницу
+	currentTime = clock() - currentTime;
+	//Переводим в секунды
+    cout << "Время работы: " << static_cast<double>(currentTime) / CLOCKS_PER_SEC << " s\n";
+}
 
 int main(int argc, char *argv[])
 {
@@ -111,18 +125,12 @@ int main(int argc, char *argv[])
     else
         ::isCout = false;
 
-
-    cout << "Метод Эйлера" << endl;
-    cout << "h=" << h1 << " " << Euler(x_0, y_0, x_n, h1) << endl;
-    cout << "h=" << h2 << " " << Euler(x_0, y_0, x_n, h2) << endl;
-
-    cout << "Модифицированный метод Эйлера" << endl;
-    cout << "h=" << h1 << " " << modifiedEuler(x_0, y_0, x_n, h1) << endl;
-    cout << "h=" << h2 << " " << modifiedEuler(x_0, y_0, x_n, h2) << endl;
-
-    cout << "Метода Рунге-Кутты четвертого порядка" << endl;
-    cout << "h=" << h1 << " " << RK(x_0, y_0, x_n, h1) << endl;
-    cout << "h=" << h2 << " " << RK(x_0, y_0, x_n, h2) << endl;
+	call(x_0, y_0, x_n, h1, "Метод Эйлера", Euler);
+	call(x_0, y_0, x_n, h2, "Метод Эйлера", Euler);
+	call(x_0, y_0, x_n, h1, "Модифицированный метод Эйлера", modifiedEuler);
+	call(x_0, y_0, x_n, h2, "Модифицированный метод Эйлера", modifiedEuler);
+	call(x_0, y_0, x_n, h1, "Метода Рунге-Кутты 4 порядка", RK);
+	call(x_0, y_0, x_n, h2, "Метода Рунге-Кутты 4 порядка", RK);
 
     return 0;
 }
