@@ -92,6 +92,32 @@ void fprintMass(string f_name, string method, double *mass, int n)
 	file.close();
 }
 
+void call(int n, double h, double* x, string method_name, bool isPrintMass, double sol, double(*foo) (double*, int, double, double*), string file = "")
+{
+	clock_t currentTime;	
+    cout << method_name << endl;
+	
+	double u[n + 1];
+	memset(u, 0, sizeof(u));
+	//Берем текущее системное время
+	currentTime = clock();
+	u[0] = f(x[0]);
+	for(int i = 1; i < n + 1; i++)
+	    u[i] = foo(x, i, h, u);
+	    
+	//Берем разницу
+	currentTime = clock() - currentTime;
+	//Переводим в секунды
+    cout << std::fixed <<"Время работы: " << static_cast<double>(currentTime) / CLOCKS_PER_SEC << " s\n";
+    
+    cout << "Разница: " << fabs(sol - u[n]) << endl;
+    
+   	if (isPrintMass)
+		printMass(u, n + 1);
+	if (!file.empty())
+		fprintMass(file, method_name, u, n + 1);		
+}
+
 void solution(double a, double b, int n, string file = "")
 {
 	double h = (b - a) / n; // step
@@ -102,50 +128,24 @@ void solution(double a, double b, int n, string file = "")
 	printMass(x, n + 1);
 	if (!file.empty())
 		fprintMass(file, "X", x, n + 1);
-	
-	// Метод трапеций
-	double u[n + 1];
-	memset(u, 0, sizeof(u));
-	u[0] = f(x[0]);
-	for(int i = 1; i < n + 1; i++)
-	    u[i] = trapeze(x, i, h, u);
-	cout << "Метод трапеций" << endl;
-	printMass(u, n + 1);
-	if (!file.empty())
-		fprintMass(file, "Трапеций", u, n + 1);
-	
-	//Симпсон
-	memset(u, 0, sizeof(u));
-	u[0] = f(x[0]);
-	for(int i = 1; i < n + 1; i++)
-	    u[i] = simpson(x, i, h, u);
-	cout << "Метод Симпсона" << endl;
-	printMass(u, n + 1);
-	if (!file.empty())
-		fprintMass(file, "Симпсон", u, n + 1);
-	
-	
-	//3/8
-	memset(u, 0, sizeof(u));
-	u[0] = f(x[0]);
-	for(int i = 1; i < n + 1; i++)
-	    u[i] = three_eights(x, i, h, u);
-	cout << "Метод трех восьмых" << endl;
-	printMass(u, n + 1);
-	if (!file.empty())
-		fprintMass(file, "Трех восьмых", u, n + 1);
-	
-	
+		
+	double analitics[n + 1];	
 	// Аналитическое
-	memset(u, 0, sizeof(u));
+	memset(analitics, 0, sizeof(analitics));
 	for(int i = 0; i < n + 1; i++)
-	    u[i] = test_u(x[i]);
+	    analitics[i] = test_u(x[i]);
 	cout << "Аналитическое решение" << endl;
-	printMass(u, n + 1);
+	printMass(analitics, n + 1);
+	
 	if (!file.empty())
-		fprintMass(file, "Аналитическое решение", u, n + 1);
+		fprintMass(file, "Аналитическое решение", analitics, n + 1);
+		
+	call(n, h, x, "Метод трапеций", false, analitics[n], trapeze, file);
+			
+	call(n, h, x, "Метод Симпсона", false, analitics[n], simpson, file);
+	
+	call(n, h, x, "Трех восьмых", false, analitics[n], three_eights, file);
 }
-
 
 int main() 
 {
